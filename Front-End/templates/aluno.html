@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar_left %}
+<a href="/notificacoes?token={{ current_user.token }}" class="button">Notificações</a>
+{% endblock %}
+
+{% block content %}
+<div class="user-home-container">
+    <div class="user-home-column">
+        <h2>Provas Futuras</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in to_do.keys() %}
+                <tr>
+                    <td><a href="/prova/{{ to_do[entry].idProva }}/{{ to_do[entry].idVersao }}?token={{ current_user.token }}">{{  to_do[entry].nome }}</a></td>
+                    <td>{{ to_do[entry].data }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td><a href="/prova?token={{ current_user.token }}">Ver Todos</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="user-home-column">
+        <h2>Provas Realizadas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Classificação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in done[:10] %}
+                    <tr>
+                        <td><a href="{{ entry.link }}?token={{ current_user.token }}">{{ entry.idProva }}</a></td>
+                        <td>{{ entry.classificacao }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td><a href="/resolucao?token={{ current_user.token }}">Ver Todos</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="user-home-column"> 
+        <h2>Notificações</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Titulo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in notifications[:10] %}
+                <tr>
+                    <td><a href="/notificacoes?token={{ current_user.token }}#{{ entry.titulo.lower().replace(' ', '-') }}">{{ entry.titulo }}</a></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td><a href="/notificacoes?token={{ current_user.token }}">Ver Todos</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar_left %}
+<a href="/?token={{ current_user.token }}" class="button">Inicio</a>
+<a href="/notificacoes?token={{ current_user.token }}" class="button">Notificações</a>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+    <div class="pop-center"  style="align-items:normal;">
+    <h2>Informações da Prova</h2>
+    <div class="notification-entry" >
+        {% for key, value in prova.items() %}
+            <p><strong>{{ key.capitalize() }}</strong>: {{ value }}</p>
+        {% endfor %}
+    </div>
+    
+    {% if available %} 
+    <a href="/realizar/{{ prova['idProva'] }}/{{ prova['idVersao'] }}?token={{ current_user.token }}" class="button">Iniciar Prova</a>
+    {% else %}
+    <a class="button" style="background-color: grey;">Iniciar Prova</a>
+    {% endif %}
+    </div>
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="user-home-container">
+    <div class="user-home-column">
+        <h2>Provas Disponiveis</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in available.keys() %}
+                <tr>
+                    <td><a href="/prova/{{ available[entry].idProva }}/versao/{{ available[entry].idVersao }}?token={{ current_user.token }}">{{  available[entry].nome }}</a></td>
+                    <td>{{ available[entry].data }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td><a href="/prova?token={{ current_user.token }}">Ver Todos</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="user-home-column">
+        <h2>Provas Por Corrigir</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Aluno</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in waiting[:10] %}
+                    <tr>
+                        <td><a href="{{ entry.link }}?token={{ current_user.token }}">{{ entry.idProva }}</a></td>
+                        <td>{{ entry.idAluno }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td><a href="/resolucao?token={{ current_user.token }}">Ver Todos</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

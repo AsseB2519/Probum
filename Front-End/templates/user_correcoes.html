@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar_left %}
+<a href="/?token={{ current_user.token }}" class="button">Inicio</a>
+<a href="/notificacoes?token={{ current_user.token }}" class="button">Notificações</a>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="prova-list-container">
+    <h2>Correções de Provas Realizadas</h2>
+    {% for prova in provas %}
+    <hr> <!-- Add a line before the next entry -->
+    <div class="prova-list-entry">
+        <div class="prova-list-content" style="width: 90%;">
+            {% for key, value in prova.items() %}
+            {% if key != 'link' %}
+            <p><strong>{{ key.capitalize() }}:</strong> {{ value }}</p>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="prova-list-content">
+            <button class="button" onclick="window.location.href='{{ prova.link }}?token={{ current_user.token }}'">☍</button>
+        </div>
+    </div>
+    {% endfor %}
+    <hr> <!-- Add a line before the next entry -->
+
+</div>
+
+
+{% endblock %}

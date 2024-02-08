@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar_left %}
+<a href="/?token={{ current_user.token }}" class="button">Inicio</a>
+<a href="/notificacoes?token={{ current_user.token }}" class="button">Notificações</a>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="notifications-container">
+    <h2>Resolução da Prova {{ resolucao['nome'] }}</h2>
+    <div class="notification-entry">
+        {% for item in resolucao['questoes'] %}
+            {% for key,value in item.items() %}
+                <p><strong>{{ key.capitalize() }}:</strong> {{ value }}</p>
+            {% endfor %}
+            <hr> <!-- Add a line before the next entry -->
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

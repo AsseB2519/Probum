@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROBUM</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-left">
+            {% block navbar_left %}{% endblock %}
+        </div>
+
+        <div class="navbar-center">
+            <h1>{% block title %}PROBUM{% endblock %}</h1>
+        </div>
+
+        <div class="navbar-right">
+            {% block navbar_right %}{% endblock %}
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</body>
+
+</html>

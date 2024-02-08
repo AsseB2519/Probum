@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}PROBUM{% endblock %}
+
+{% block content %}
+<div class="questao-container">
+    <form id="questaoForm" method="POST" action="{{ route_no_question }}/{{ id_version }}/questao/{{ i_atual }}?token={{ current_user.token }}">
+        <label for="question" style="padding: 10px;">{{ question }}</label>
+        {% if question_type == 0 %}
+            {% for choice in choices %}
+                <div>
+                    <input type="checkbox" name="awnser" value="{{ choice }}"> {{ choice }}
+                </div>
+            {% endfor %}
+        {% elif question_type == 1 %}
+            {% for choice in choices %}
+                <div>
+                    <input type="radio" name="awnser" value="{{ choice }}"> {{ choice }}
+                </div>
+            {% endfor %}
+        {% elif question_type == 2 %}
+            <div>
+                <input type="text" name="awnser">
+            </div>
+        {% endif %}
+        <div style="padding: 10px;"></div>
+        <button type="submit" class="button">Submit Answer</button>
+    </form>
+    <div class="navigation-buttons" style="padding: 10px;">
+        {% for i in range(1, max_questions + 1) %}
+        <a href="{{ route_no_question }}/{{ id_version }}/questao/{{ ids[i-1] }}?token={{ current_user.token }}">
+            <button class="button">{{ i }}</button>
+        </a>
+        {% endfor %}
+    </div>
+    <form method="POST"  style="padding: 10px;" action="{{ route_no_question }}?token={{ current_user.token }}">
+        <button type="submit" class="button">Submit Exam</button>
+    </form>
+
+
+</div>
+
+{% endblock %}

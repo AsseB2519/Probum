@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block navbar_left %}
+{% if current_user %}
+<a href="/?token={{ current_user.token }}" class="button">Home</a>
+{% else %}
+<a href="/" class="button">Inicio</a>
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <h2>Error</h2>
+    <p>{{ error_message }}</p>
+</div>
+{% endblock %}

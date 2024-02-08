@@ -1,0 +1,402 @@
+/* Reset some default styles */
+body,
+h1,
+h2,
+p,
+a {
+    margin: 0;
+    padding: 0;
+}
+
+/* Apply a background color to the body */
+body {
+    background-color: #eee;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Style the navbar */
+.navbar {
+    background-color: #333;
+    color: #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.navbar a {
+    color: #eee;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #555;
+}
+
+/* Style the content area */
+.content {
+    padding: 20px;
+}
+
+/* Style the page title */
+h1 {
+    color: #eee;
+}
+
+/* Style buttons */
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
+
+/* Center the login form */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    /* Set the container height to full viewport height */
+}
+
+/* Style the form elements */
+.login-container form {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Adjust the form width as needed */
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Center the login form */
+.questao-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    /* Set the container height to full viewport height */
+}
+
+/* Style the form elements */
+.questao-container form {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Adjust the form width as needed */
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the form elements */
+.pop-center {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Adjust the form width as needed */
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+
+.login-container h2 {
+    margin-bottom: 20px;
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.login-container input,
+.login-container select {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-container button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.password-container {
+    position: relative;
+    width: 80%;
+    padding: 10px;
+ 
+}
+
+.password-container input {
+    width: 100%;
+    transform: translateX(-4%);
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-90%);
+    right: 5px;
+    cursor: pointer;
+}
+
+/* Styles for the modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #f3f3f3;
+    color: #333;
+}
+
+/* Additional styles for the result modal */
+.modal-content.result {
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Styles for different result states */
+.modal-content.result.success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.modal-content.result.error {
+    background-color: #f44336;
+    color: white;
+}
+
+.modal-content.result.warning {
+    background-color: #ffeb3b;
+    color: #333;
+}
+
+/* Add these styles to your existing style.css or create a new one */
+
+/* User info and options in the navbar */
+.user-info {
+    position: relative;
+}
+
+.user-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 10px;  /* Increase padding for more space */
+  min-width: 150px;  /* Set a minimum width */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);  /* Add a subtle box shadow */
+}
+
+.user-info:hover .user-options {
+    display: block;
+}
+
+.user-options a:hover {
+    color: #f1f1f1;
+}
+
+.user-options a {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    /* Adjust as needed for spacing */
+}
+
+/* User home container layout */
+.user-home-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.user-home-column {
+    flex: 1;
+    margin-right: 20px;
+}
+
+/* Table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Add this to your existing style.css file or create a new one */
+
+/* Style for the notifications container */
+.notifications-container {
+    margin-top: 20px;
+    /* Adjust as needed */
+}
+
+/* Style for each notification entry */
+.notification-entry {
+    margin-bottom: 10px;
+    /* Adjust as needed */
+}
+
+/* Style for the key in each notification entry */
+.notification-entry p strong {
+    color: #444;
+    /* Adjust the color as needed */
+}
+
+/* Style for the line between notification entries */
+.notification-entry hr {
+    border: 1px solid #CED4DA;
+    /* Adjust the color as needed */
+}
+
+.prova-list-container {
+    margin-top: 20px;
+    /* Adjust as needed */
+}
+
+/* Style for each prova-list entry */
+.prova-list-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    /* Adjust as needed */
+}
+
+/* Style for the prova-list content */
+.prova-list-content {
+    flex-grow: 1;
+}
+
+/* Style for the key in each prova-list entry */
+.prova-list-content p strong {
+    color: #444;
+    /* Adjust the color as needed */
+}
+
+/* Style for the line between prova-list entries */
+.prova-list-entry hr {
+    border: 1px solid #CED4DA;
+    /* Adjust the color as needed */
+}
+
+.edit-user-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.edit-user-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-user-container label {
+    margin-top: 10px;
+}
+
+.edit-user-container input {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.edit-user-container button {
+    margin-bottom: 10px;
+}
+
+/* Responsive design for smaller screens */
+@media screen and (max-width: 600px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .navbar-center {
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .navbar-left,
+    .navbar-right {
+        width: 100%;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .navbar a {
+        display: block;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

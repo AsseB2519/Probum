@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}PROBUM - Login{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Password:</label>
+        <div class="password-container">
+            <input type="password" id="password" name="password" required>
+            <span class="password-toggle" onclick="togglePassword()">👁</span>
+        </div>
+        <label for="user_type">Tipo de Utilizador:</label>
+        <select id="user_type" name="user_type" required>
+            <option value="aluno">Aluno</option>
+            <option value="docente">Docente</option>
+            <option value="tecnico">Técnico</option>
+        </select>
+
+        <button type="button" class="button" onclick="submitForm()">Login</button>
+    </form>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <p id="loadingText">A verificar credenciais...</p>
+    </div>
+</div>
+
+<script>
+    //clear the local storage token
+    localStorage.removeItem('token');
+
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.querySelector('.password-toggle');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordToggle.textContent = '🕶'; // Change to '🕶' when password is visible
+        } else {
+            passwordInput.type = 'password';
+            passwordToggle.textContent = '👁'; // Change to '👁' when password is hidden
+        }
+    }
+
+    function toggleModal(show) {
+        const modal = document.getElementById('modal');
+        modal.style.display = show ? 'block' : 'none';
+    }
+
+    // Function to update the modal content
+    function updateModal(color, message) {
+        const modal = document.getElementById('modal');
+        const modalContent = modal.querySelector('.modal-content');
+
+        if (color === 'loading') {
+            // Loading state
+            modalContent.style.backgroundColor = '#f3f3f3';
+            document.getElementById('loadingText').innerText = message;
+        } else {
+            // Result state
+            modalContent.style.backgroundColor = color;
+            document.getElementById('loadingText').innerText = message;
+
+            // Hide modal after a delay (adjust as needed)
+            setTimeout(() => {
+                toggleModal(false);
+            }, 2000); // Hide after 2 seconds
+        }
+    }
+
+    // Your existing submitForm function
+    function submitForm() {
+        toggleModal(true); // Show modal with loading state
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const userType = document.getElementById('user_type').value;
+
+        const formData = {
+            username: username,
+            password: password,
+            user_type: userType
+        };
+
+        // Make the login request using Fetch API
+        fetch("/user/login", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle the response as needed
+            if (data.token) {
+                // Authentication successful
+                updateModal('#4CAF50', 'Login efetuado com sucesso');
+                // Redirect to '/' after a delay (adjust as needed)
+                setTimeout(() => {
+                    localStorage.setItem('token', data.token);
+                    window.location.href = '/?token=' + data.token;
+
+                }, 2000); // Redirect after 2 seconds
+            } else {
+                // Invalid credentials
+                updateModal('#f44336', 'Credenciais inválidas');
+                setTimeout(() => {
+                    window.location.href = '/user/login';
+                }, 2000); // Redirect after 2 seconds
+            }
+        })
+        .catch(error => {
+            if (error.message === 'HTTP error! Status: 401') {
+                // Unauthorized
+                updateModal('#f44336', 'Credenciais inválidas');
+                setTimeout(() => {
+                    window.location.href = '/user/login';
+                }, 2000); // Redirect after 2 seconds
+            } else if (error.message === 'HTTP error! Status: 503') {
+                // Service unavailable
+                updateModal('#ffeb3b', 'Serviço indisponível');
+                setTimeout(() => {
+                    window.location.href = '/user/login';
+                }, 2000); // Redirect after 2 seconds
+            } else {
+                // Other errors
+                updateModal('#ffeb3b', 'Erro desconhecido');
+                setTimeout(() => {
+                    window.location.href = '/user/login';
+                }, 2000); // Redirect after 2 seconds
+            }
+            console.error('Error:', error);
+        });
+    }
+</script>
+{% endblock %}

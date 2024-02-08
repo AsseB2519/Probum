@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}PROBUM - Create Exam{% endblock %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="questao-container">
+    <form id="createExamForm" method="POST" action="{{ route_to_create_exam }}?token={{ current_user.token }}">
+        <!-- Date and Classroom -->
+        <label for="examDate">Exam Date:</label>
+        <input type="date" id="examDate" name="examDate" required>
+
+        <label for="classroom">Classroom:</label>
+        <input type="text" id="classroom" name="classroom" required>
+
+        <!-- Questions -->
+        <div id="questionsContainer">
+            <!-- Example of a Multiple Choice Question -->
+            <div class="question">
+                <label for="questionText1">Question 1:</label>
+                <input type="text" id="questionText1" name="questionText[]" required>
+
+                <label for="questionType1">Question Type:</label>
+                <select id="questionType1" name="questionType[]">
+                    <option value="0">Select One</option>
+                    <option value="1">Mark Multiple Options</option>
+                    <option value="2">Text Answer</option>
+                </select>
+
+                <label for="options1">Options (Separate with commas):</label>
+                <input type="text" id="options1" name="options[]">
+
+                <label for="correctOptions1">Correct Options (Separate with commas):</label>
+                <input type="text" id="correctOptions1" name="correctOptions[]">
+
+                <label for="weight1">Question Weight:</label>
+                <input type="range" id="weight1" name="weight[]" min="1" max="10" value="5">
+                <span id="weightValue1">5</span>
+            </div>
+            <!-- Add more questions dynamically using JavaScript -->
+        </div>
+
+        <button type="button" class="button" onclick="addQuestion()">Add Question</button>
+
+        <div style="padding: 10px;"></div>
+        <button type="submit" class="button">Create Exam</button>
+    </form>
+</div>
+
+<script>
+    // Function to add more questions dynamically
+    function addQuestion() {
+        var questionsContainer = document.getElementById('questionsContainer');
+        var questionCount = questionsContainer.children.length;
+
+        var newQuestion = document.createElement('div');
+        newQuestion.classList.add('question');
+
+        newQuestion.innerHTML = `
+            <label for="questionText${questionCount + 1}">Question ${questionCount + 1}:</label>
+            <input type="text" id="questionText${questionCount + 1}" name="questionText[]" required>
+
+            <label for="questionType${questionCount + 1}">Question Type:</label>
+            <select id="questionType${questionCount + 1}" name="questionType[]">
+                <option value="0">Select One</option>
+                <option value="1">Mark Multiple Options</option>
+                <option value="2">Text Answer</option>
+            </select>
+
+            <label for="options${questionCount + 1}">Options (Separate with commas):</label>
+            <input type="text" id="options${questionCount + 1}" name="options[]">
+
+            <label for="correctOptions${questionCount + 1}">Correct Options (Separate with commas):</label>
+            <input type="text" id="correctOptions${questionCount + 1}" name="correctOptions[]">
+
+            <label for="weight${questionCount + 1}">Question Weight:</label>
+            <input type="range" id="weight${questionCount + 1}" name="weight[]" min="1" max="10" value="5">
+            <span id="weightValue${questionCount + 1}">5</span>
+        `;
+
+        questionsContainer.appendChild(newQuestion);
+
+        // Update event listeners and IDs for the new elements
+        updateEventListeners();
+    }
+
+    // Function to update event listeners and IDs for dynamically added elements
+    function updateEventListeners() {
+        var questionsContainer = document.getElementById('questionsContainer');
+        var questions = questionsContainer.getElementsByClassName('question');
+
+        for (var i = 0; i < questions.length; i++) {
+            var questionTypeSelect = questions[i].querySelector(`#questionType${i + 1}`);
+            var weightSlider = questions[i].querySelector(`#weight${i + 1}`);
+            var weightValue = questions[i].querySelector(`#weightValue${i + 1}`);
+
+            // Update IDs
+            questionTypeSelect.id = `questionType${i + 1}`;
+            weightSlider.id = `weight${i + 1}`;
+            weightValue.id = `weightValue${i + 1}`;
+
+            // Update event listeners
+            questionTypeSelect.addEventListener('change', updateOptionsVisibility);
+            weightSlider.addEventListener('input', updateWeightValue);
+
+            // Initial update
+            updateOptionsVisibility.call(questionTypeSelect);
+            updateWeightValue.call(weightSlider);
+        }
+    }
+
+    // Function to update visibility of options based on question type
+    function updateOptionsVisibility() {
+        var selectedType = this.value;
+        var optionsInput = this.parentElement.querySelector(`[id^=options]`);
+        var correctOptionsInput = this.parentElement.querySelector(`[id^=correctOptions]`);
+
+        if (selectedType === '0') {
+            // Select One
+            optionsInput.setAttribute('disabled', true);
+            correctOptionsInput.setAttribute('disabled', true);
+        } else if (selectedType === '1') {
+            // Mark Multiple Options
+            optionsInput.removeAttribute('disabled');
+            correctOptionsInput.removeAttribute('disabled');
+        } else if (selectedType === '2') {
+            // Text Answer
+            optionsInput.setAttribute('disabled', true);
+            correctOptionsInput.setAttribute('disabled', true);
+        }
+    }
+
+    // Function to update the displayed weight value
+    function updateWeightValue() {
+        var valueSpan = this.parentElement.querySelector(`[id^=weightValue]`);
+        valueSpan.textContent = this.value;
+    }
+
+    // Initial setup
+    updateEventListeners();
+</script>
+{% endblock %}

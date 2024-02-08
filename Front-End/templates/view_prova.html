@@ -1,0 +1,176 @@
+
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="questao-container">
+    <form id="editExamForm" method="POST" action="{{ route_to_edit_exam }}?token={{ current_user.token }}">
+        <!-- Exam Details -->
+        <label for="examDate">Exam Date:</label>
+        <input type="date" id="examDate" name="examDate" value="{{ exam.date }}" required>
+
+        <label for="classroom">Classroom:</label>
+        <input type="text" id="classroom" name="classroom" value="{{ exam.classroom }}" required>
+
+        <!-- Questions -->
+        <div id="questionsContainer">
+            {% for question in exam.questions %}
+            <div class="question">
+                <label for="questionText{{ loop.index }}">Question {{ loop.index }}:</label>
+                <input type="text" id="questionText{{ loop.index }}" name="questionText[]" value="{{ question.text }}"
+                    required>
+
+                <label for="questionType{{ loop.index }}">Question Type:</label>
+                <select id="questionType{{ loop.index }}" name="questionType[]">
+                    <option value="0" {% if question.type==0 %}selected{% endif %}>Select One</option>
+                    <option value="1" {% if question.type==1 %}selected{% endif %}>Mark Multiple Options</option>
+                    <option value="2" {% if question.type==2 %}selected{% endif %}>Text Answer</option>
+                </select>
+
+                <label for="options{{ loop.index }}">Options (Separate with commas):</label>
+                <input type="text" id="options{{ loop.index }}" name="options[]"
+                    value="{{ question.options | join(', ') }}">
+
+                <label for="correctOptions{{ loop.index }}">Correct Options (Separate with commas):</label>
+                <input type="text" id="correctOptions{{ loop.index }}" name="correctOptions[]"
+                    value="{{ question.correct_options | join(', ') }}">
+
+                <label for="weight{{ loop.index }}">Question Weight:</label>
+                <input type="range" id="weight{{ loop.index }}" name="weight[]" min="1" max="10"
+                    value="{{ question.weight }}">
+                <span id="weightValue{{ loop.index }}">{{ question.weight }}</span>
+
+                <!-- Button to delete the question -->
+                <button type="button" class="button" style="background-color: rgb(190, 56, 83);"
+                    onclick="deleteQuestion(this)">Delete Question</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" class="button" onclick="addQuestion()">Add Question</button>
+
+        <div style="padding: 10px;"></div>
+        <button type="submit" class="button">Update Exam</button>
+        <button type="button" class="button" style="background-color: rgb(190, 56, 83);"
+            onclick="confirmDelete()">Delete Exam</button>
+    </form>
+</div>
+
+<script>
+    // Function to add more questions dynamically
+    function addQuestion() {
+        var questionsContainer = document.getElementById('questionsContainer');
+        var questionCount = questionsContainer.children.length;
+
+        var newQuestion = document.createElement('div');
+        newQuestion.classList.add('question');
+
+        newQuestion.innerHTML = `
+            <label for="questionText${questionCount + 1}">Question ${questionCount + 1}:</label>
+            <input type="text" id="questionText${questionCount + 1}" name="questionText[]" required>
+
+            <label for="questionType${questionCount + 1}">Question Type:</label>
+            <select id="questionType${questionCount + 1}" name="questionType[]">
+                <option value="0">Select One</option>
+                <option value="1">Mark Multiple Options</option>
+                <option value="2">Text Answer</option>
+            </select>
+
+            <label for="options${questionCount + 1}">Options (Separate with commas):</label>
+            <input type="text" id="options${questionCount + 1}" name="options[]">
+
+            <label for="correctOptions${questionCount + 1}">Correct Options (Separate with commas):</label>
+            <input type="text" id="correctOptions${questionCount + 1}" name="correctOptions[]">
+
+            <label for="weight${questionCount + 1}">Question Weight:</label>
+            <input type="range" id="weight${questionCount + 1}" name="weight[]" min="1" max="10" value="5">
+            <span id="weightValue${questionCount + 1}">5</span>
+
+            <button type="button" class="button" style="background-color: rgb(190, 56, 83);" onclick="deleteQuestion(this)">Delete Question</button>
+        `;
+
+        questionsContainer.appendChild(newQuestion);
+
+        // Update event listeners and IDs for the new elements
+        updateEventListeners();
+    }
+
+    // Function to update event listeners and IDs for dynamically added elements
+    function updateEventListeners() {
+        var questionsContainer = document.getElementById('questionsContainer');
+        var questions = questionsContainer.getElementsByClassName('question');
+
+        for (var i = 0; i < questions.length; i++) {
+            var questionTypeSelect = questions[i].querySelector(`#questionType${i + 1}`);
+            var weightSlider = questions[i].querySelector(`#weight${i + 1}`);
+            var weightValue = questions[i].querySelector(`#weightValue${i + 1}`);
+
+            // Update IDs
+            questionTypeSelect.id = `questionType${i + 1}`;
+            weightSlider.id = `weight${i + 1}`;
+            weightValue.id = `weightValue${i + 1}`;
+
+            // Update event listeners
+            questionTypeSelect.addEventListener('change', updateOptionsVisibility);
+            weightSlider.addEventListener('input', updateWeightValue);
+
+            // Initial update
+            updateOptionsVisibility.call(questionTypeSelect);
+            updateWeightValue.call(weightSlider);
+        }
+    }
+
+    // Function to update visibility of options based on question type
+    function updateOptionsVisibility() {
+        var selectedType = this.value;
+        var optionsInput = this.parentElement.querySelector(`[id^=options]`);
+        var correctOptionsInput = this.parentElement.querySelector(`[id^=correctOptions]`);
+
+        if (selectedType === '0') {
+            // Select One
+            optionsInput.setAttribute('disabled', true);
+            correctOptionsInput.setAttribute('disabled', true);
+        } else if (selectedType === '1') {
+            // Mark Multiple Options
+            optionsInput.removeAttribute('disabled');
+            correctOptionsInput.removeAttribute('disabled');
+        } else if (selectedType === '2') {
+            // Text Answer
+            optionsInput.setAttribute('disabled', true);
+            correctOptionsInput.setAttribute('disabled', true);
+        }
+    }
+
+    // Function to update the displayed weight value
+    function updateWeightValue() {
+        var valueSpan = this.parentElement.querySelector(`[id^=weightValue]`);
+        valueSpan.textContent = this.value;
+    }
+
+    // Function to delete a question
+    function deleteQuestion(button) {
+        var questionContainer = button.parentElement;
+        questionContainer.parentNode.removeChild(questionContainer);
+        updateEventListeners(); // Update event listeners after deleting a question
+    }
+
+    // Function to confirm exam deletion
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete this exam?")) {
+            document.getElementById('editExamForm').submit(); // Submit the form for deletion
+        }
+    }
+
+    // Initial setup
+    updateEventListeners();
+</script>
+{% endblock %}

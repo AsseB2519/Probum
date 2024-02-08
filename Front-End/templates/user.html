@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block navbar_left %}
+<a href="/?token={{ current_user.token }}" class="button">Inicio</a>
+{% if current_user.user_type == 'aluno' %}
+<a href="/notificacoes?token={{ current_user.token }}" class="button">Notificações</a>
+{% endif %}
+{% endblock %}
+
+
+{% block content %}
+<div class="edit-user-container">
+    <h2>Edit User Information</h2>
+
+    <form method="post" action="/user/{{ user.username }}?token={{ current_user.token }}">
+        <!-- Display user information for editing -->
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ user.email }}" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Enter new password">
+
+        <!-- Button to submit changes -->
+        <input type="hidden" name="_method" value="PUT">
+        <button type="button" class="button" onclick="submitForm()">Submeter Alterações</button>
+
+        <!-- Button to delete user if allow_delete is true -->
+        {% if allow_delete %}
+        <button type="button" class="button" style="background-color: rgb(190, 56, 83);" onclick="confirmDelete()">Apagar Utilizador</button>
+        {% endif %}
+    </form>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <p id="loadingText"></p>
+    </div>
+</div>
+
+<!-- JavaScript to confirm user deletion -->
+<script>
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete this user?")) {
+            toggleModal(true, 'loading', 'Deleting user information...'); // Show modal with loading state
+
+            fetch(`/user/{{ user.username }}?token={{ current_user.token }}`, {
+                method: 'DELETE'
+            })
+            .then(response => handleResponse(response, 'Utilizador removido com sucesso', 'Ocorreu um erro ao remover o utilizador'));
+        }
+    }
+
+    function submitForm() {
+        toggleModal(true, 'loading', 'Updating user information...'); // Show modal with loading state
+
+        var username = document.getElementById('username').value;
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+
+        var formData = {
+            username: username,
+            email: email,
+            password: password
+        };
+
+        fetch(`/user/{{ user.username }}?token={{ current_user.token }}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => handleResponse(response, 'Utilizador atualizado com sucesso', 'Ocorreu um erro ao atualizar as informações do utilizador'));
+    }
+
+    // Function to handle the response and display the popup
+    function handleResponse(response, successMessage, errorMessage) {
+        toggleModal(false); // Hide loading modal
+
+        var modal = document.getElementById('modal');
+        var modalContent = modal.querySelector('.modal-content');
+        var loadingText = modalContent.querySelector('#loadingText');
+
+        if (response.ok) {
+            // Success
+            modalContent.style.backgroundColor = '#4CAF50'; // Green
+            loadingText.innerText = successMessage;
+        } else {
+            // Failure
+            modalContent.style.backgroundColor = '#f44336'; // Red
+            loadingText.innerText = errorMessage;
+        }
+
+        // Show the popup
+        modal.style.display = 'block';
+
+        // Hide the popup after 2 seconds (adjust as needed)
+        setTimeout(() => {
+            modal.style.display = 'none';
+            // Redirect based on success or failure
+            if (response.ok) {
+                // Redirect to home after success
+                window.location.href = '/?token={{ current_user.token }}';
+            } else {
+                // Redirect to current route after failure
+                window.location.reload();
+            }
+        }, 2000);
+    }
+
+    function toggleModal(show, type, message) {
+        const modal = document.getElementById('modal');
+        const modalContent = modal.querySelector('.modal-content');
+        const loadingText = modalContent.querySelector('#loadingText');
+
+        if (show) {
+            modal.style.display = 'block';
+            if (type === 'loading') {
+                // Loading state
+                modalContent.style.backgroundColor = '#f3f3f3';
+                loadingText.innerText = message;
+            }
+        } else {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

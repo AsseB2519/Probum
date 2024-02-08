@@ -1,0 +1,89 @@
+<!-- edit_question.html -->
+
+{% extends 'base.html' %}
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="questao-container">
+    <form id="editQuestionForm" method="POST" action="{{ route_to_edit_question }}?token={{ current_user.token }}">
+        <!-- Question Details -->
+        <label for="questionText">Question:</label>
+        <input type="text" id="questionText" name="questionText" value="{{ question.text }}" required>
+
+        <label for="questionType">Question Type:</label>
+        <select id="questionType" name="questionType">
+            <option value="0" {% if question.type==0 %}selected{% endif %}>Select One</option>
+            <option value="1" {% if question.type==1 %}selected{% endif %}>Mark Multiple Options</option>
+            <option value="2" {% if question.type==2 %}selected{% endif %}>Text Answer</option>
+        </select>
+
+        <label for="options">Options (Separate with commas):</label>
+        <input type="text" id="options" name="options" value="{{ question.options | join(', ') }}">
+
+        <label for="correctOptions">Correct Options (Separate with commas):</label>
+        <input type="text" id="correctOptions" name="correctOptions"
+            value="{{ question.correct_options | join(', ') }}">
+
+        <label for="weight">Question Weight:</label>
+        <input type="range" id="weight" name="weight" min="1" max="10" value="{{ question.weight }}">
+        <span id="weightValue">{{ question.weight }}</span>
+
+        <div style="padding: 10px;"></div>
+        <button type="submit" class="button">Update Question</button>
+        <button type="button" class="button" style="background-color: rgb(190, 56, 83);"
+            onclick="confirmDelete()">Delete Question</button>
+    </form>
+</div>
+
+<script>
+    // Function to update visibility of options based on question type
+    function updateOptionsVisibility() {
+        var selectedType = document.getElementById('questionType').value;
+        var optionsInput = document.getElementById('options');
+        var correctOptionsInput = document.getElementById('correctOptions');
+
+        if (selectedType === '0') {
+            // Select One
+            optionsInput.setAttribute('disabled', true);
+            correctOptionsInput.setAttribute('disabled', true);
+        } else if (selectedType === '1') {
+            // Mark Multiple Options
+            optionsInput.removeAttribute('disabled');
+            correctOptionsInput.removeAttribute('disabled');
+        } else if (selectedType === '2') {
+            // Text Answer
+            optionsInput.setAttribute('disabled', true);
+            correctOptionsInput.setAttribute('disabled', true);
+        }
+    }
+
+    // Function to update the displayed weight value
+    function updateWeightValue() {
+        var valueSpan = document.getElementById('weightValue');
+        var weightSlider = document.getElementById('weight');
+        valueSpan.textContent = weightSlider.value;
+    }
+
+    // Function to confirm question deletion
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete this question?")) {
+            document.getElementById('editQuestionForm').submit(); // Submit the form for deletion
+        }
+    }
+
+    // Event listeners
+    document.getElementById('questionType').addEventListener('change', updateOptionsVisibility);
+    document.getElementById('weight').addEventListener('input', updateWeightValue);
+
+    // Initial update
+    updateOptionsVisibility();
+    updateWeightValue();
+</script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block navbar_right %}
+<div class="user-info">
+    <span>{{ current_user.username }}</span>
+    <div class="user-options">
+        <a href="/user/{{ current_user.username }}?token={{ current_user.token }}">Perfil</a>
+        <a href="/user/logout">Logout</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="questao-container">
+    <form id="autoCorrectionForm" method="POST" action="/resolucao/{{ exam.id }}/auto">
+        {% for question, user_answer in zip(exam.questions, exam.user_answers) %}
+        <div class="question">
+            <p>{{ question.text }}</p>
+
+            <label for="slider{{ loop.index }}">Automatic Correction Value (0 - {{ question.max_value }}):</label>
+            <input type="range" id="slider{{ loop.index }}" name="slider{{ loop.index }}" min="0"
+                max="{{ question.max_value }}" value="{{ user_answer.value }}" >
+
+            <label for="notes{{ loop.index }}">Notes (optional):</label>
+            <textarea id="notes{{ loop.index }}" name="notes{{ loop.index }}"
+                disabled>{{ user_answer.notes }}</textarea>
+        </div>
+        {% endfor %}
+
+        <div style="padding: 10px;"></div>
+        <button type="submit" class="button" disabled>Submit Automatic Resolution</button>
+    </form>
+</div>
+{% endblock %}

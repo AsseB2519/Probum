@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  recursos-db:
+    image: mysql:latest
+    container_name: recursos-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password123
+      MYSQL_DATABASE: Recursos
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  recursos-api:
+    build: .
+    image: recursos-api:latest
+    container_name: recursos-api
+    environment:
+      DATABASE_URL: mysql://user:password@recursos-db:3306/Recursos
+      APP_PORT: 7005
+    command: sh -c "npx prisma generate && npm run start"
+    ports:
+      - "7005:7005"
+    depends_on:
+      - recursos-db
+
+  recursos-migrate:
+    build: .
+    image: recursos-api:latest
+    container_name: recursos-migrate
+    depends_on:
+      - recursos-db
+    working_dir: /MC-Recursos/prisma
+    command: npx prisma migrate deploy
+    environment:
+      - DATABASE_URL=mysql://user:password@recursos-db:3306/Recursos
+
+
+volumes:
+  mysql-data:

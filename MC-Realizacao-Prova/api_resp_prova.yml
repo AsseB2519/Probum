@@ -1,0 +1,184 @@
+openapi: 3.0.3
+info:
+  title: Micro-Serviço Realização de Prova
+  description: >
+    Este microserviço é responsável pelo processo durante a prova e contém as seguintes funcionalidades:
+
+    - Buscar respostas de alunos para uma prova de várias questões
+
+    - Selecionar a resposta de um aluno, de uma prova
+
+    - Guardar respostas de um aluno para uma prova para uma questão
+
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.11
+tags:
+  - name: Realizar Prova
+    description: Operações relacionadas à realização de uma prova
+paths:
+  /provas/{provaId}:
+    get:
+      tags:
+        - Realizar Prova
+      summary: Get de uma prova para realizar
+      description: Busca uma prova para realizar
+      operationId: getProvaToDo
+      parameters:
+        - name: provaId
+          in: path
+          description: ID da prova 
+          required: true
+          schema:
+            type: string
+            example: PX
+      responses:
+        '200':
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                example:
+                  id_prova: PY
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'     
+  /provas/{provaId}/questoes/{questaoId}:
+    get:
+      tags:
+        - Realizar Prova
+      summary: Get de uma questao
+      description: Retorna a questao 
+      operationId: getQuestao
+      parameters:
+        - name: provaId
+          in: path
+          description: ID da prova 
+          required: true
+          schema:
+            type: string
+            example: PX
+        - name: questaoId
+          in: path
+          description: ID da questão 
+          required: true
+          schema:
+            type: string
+            example: "1"
+      responses:
+        '200':
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                example:
+                  id_prova: PY
+                  id_questao: "1"
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+    post:
+      tags:
+        - Realizar Prova
+      summary: Guarda a resposta de um aluno para uma questão de uma prova
+      description: Registra a resposta de um aluno para uma questão específica de uma prova
+      operationId: saveStudentAnswer
+      parameters:
+        - name: provaId
+          in: path
+          description: ID da prova à qual a resposta pertence
+          required: true
+          schema:
+            type: string
+            example: PX
+        - name: questaoId
+          in: path
+          description: ID da questão à qual a resposta pertence
+          required: true
+          schema:
+            type: string
+            example: "1"
+      requestBody:
+        description: Adiciona uma resposta a uma questão
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resposta:
+                  type: string
+                  example: "A"
+              required:
+                - resposta
+      responses:
+        '200':
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                example:
+                  id_questao: "1"
+                  id_prova: PY
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+    put:
+      tags:
+        - Realizar Prova
+      summary: Update a resposta a uma questao
+      description: Atualiza a resposta de um aluno para uma questão específica de uma prova
+      operationId: updateAnswer
+      parameters:
+        - name: provaId
+          in: path
+          description: ID da prova à qual a resposta pertence
+          required: true
+          schema:
+            type: string
+            example: PX
+        - name: questaoId
+          in: path
+          description: ID da questão à qual a resposta pertence
+          required: true
+          schema:
+            type: string
+            example: "1"
+      requestBody:
+        description: Atualizar uma resposta a uma questão
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resposta:
+                  type: string
+                  example: "A"
+              required:
+                - resposta
+      responses:
+        '200':
+          description: Operação bem-sucedida
+          content:
+            application/json:
+              schema:
+                example:
+                  id_questao: "1"
+                  id_prova: PY
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'         

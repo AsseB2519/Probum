@@ -1,0 +1,37 @@
+version: "3"
+services:
+  main_server:
+    container_name: container_mc_prova_app
+    build: ./App
+    environment:
+      - DB_HOST=db_prova_server
+      - DB_PORT=3306
+      - DB_DB=RAS_Prova
+      - DB_USER=mc_prova
+      - DB_PASS=mc_prova
+    ports:
+      - "7010:5000"
+    depends_on:
+      - db_prova_server
+    networks:
+      - my_network
+
+  db_prova_server:
+    container_name: container_mc_prova_db
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=RAS_Prova
+      - MYSQL_USER=mc_prova
+      - MYSQL_PASSWORD=mc_prova
+      - MYSQL_ROOT_PASSWORD=mc_prova
+    restart: always
+    ports:
+      - "3312:3306"    
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge

@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Reservas model
+model Reservas {
+  id            Int     @id @default(autoincrement())
+  data          String  @db.VarChar(45)
+  hora_inicial  String  @db.VarChar(45)
+  hora_final    String  @db.VarChar(45)
+  id_prova      Int
+  id_sala      Int      // Foreign key to Salas table
+
+  // Establishing the relationship with Salas table
+  salas       Salas    @relation(fields: [id_sala], references: [id])
+}
+
+// Salas model
+model Salas {
+  id           Int        @id @default(autoincrement())
+  piso         String     @db.VarChar(45)
+  numero       String     @db.VarChar(45)
+  capacidade   Int
+
+  // Establishing the reverse relationship with Reservas table
+  reservas     Reservas[] // One-to-many relationship with Reservas table
+}

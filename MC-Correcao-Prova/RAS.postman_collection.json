@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "0fe26345-dcac-4926-b8fc-c2d30ba71394",
+		"name": "RAS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26501653"
+	},
+	"item": [
+		{
+			"name": "Correcao Automatica",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"prova\": 1,\n  \"questoes_respostas\": [\n    {\n      \"idQuestao\": 3,\n      \"resposta\": \"ABCDEF\",\n      \"classificacao_certa\": 5,\n      \"classificacao_errada\":1,\n      \"alunos_respostas\": [\n        {\n          \"idAluno\": \"PG10\",\n          \"resposta\": \"ABCDEF\"\n        },\n        {\n          \"idAluno\": \"PG11\",\n          \"resposta\": \"ABCDEFG\"\n        }\n      ]\n    },\n    {\n      \"idQuestao\": 4,\n      \"resposta\": \"UM\",\n      \"classificacao_certa\": 3,\n      \"classificacao_errada\":1,\n      \"alunos_respostas\": [\n        {\n          \"idAluno\": \"PG10\",\n          \"resposta\": \"KK\"\n        },\n        {\n          \"idAluno\": \"PG11\",\n          \"resposta\": \"UM\"\n        }\n      ]\n    },\n    {\n      \"idQuestao\": 5,\n      \"resposta\": \"ABCDEF\",\n      \"classificacao_certa\": 5,\n      \"classificacao_errada\":10,\n      \"alunos_respostas\": [\n        {\n          \"idAluno\": \"PG10\",\n          \"resposta\": \" \"\n        },\n        {\n          \"idAluno\": \"PG11\",\n          \"resposta\": \"ABCDE\"\n        }\n      ]\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7003/auto_classificacao/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"auto_classificacao",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Classificacao Prova",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7003/classificacao/alunos/PG11/1/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"classificacao",
+						"alunos",
+						"PG11",
+						"1",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Provas Aluno",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7003/classificacao/alunos/PG10/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"classificacao",
+						"alunos",
+						"PG10",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adiciona Entradas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"idAluno\": \"PG10\",\n  \"idProva\": 1,\n  \"idQuestoes\": [\n    1,\n    2,\n    3,\n    4,\n    5\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7003/classificacao/alunos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"classificacao",
+						"alunos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Classifica Aluno",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"idAluno\": \"PG11\",\n  \"idQuestao\": 1,\n  \"idProva\": 1,\n  \"classificacao\": 7\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:7003/classificacao/alunos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"classificacao",
+						"alunos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Publica as notas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7003/classificacao/provas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"classificacao",
+						"provas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Verifica notas publicas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:7003/classificacao/provas/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "7003",
+					"path": [
+						"classificacao",
+						"provas",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

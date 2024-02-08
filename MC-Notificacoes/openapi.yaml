@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: Micro-Serviço Notificações
+  description: >-
+    Este micro-serviço é responsável pela notificação para o utilizador.
+
+    - Recebe as notificações
+
+    - Adiciona novas notificações ao utilizador
+
+    - Recebe notificação com base em se são vistas ou não
+
+    - Recebe notificação com base no titulo
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.11
+tags:
+  - name: Notificações
+    description: O processo de obter notificações
+paths:
+  /notificacoes/:
+    get:
+      tags:
+        - Notificações
+      summary: Notificações do utilizador
+      description: Mostra as notificações do utilizar
+      operationId: getUserNoti
+      responses:
+        '200':
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Noti'
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+    post:
+      tags:
+        - Notificações
+      summary: Adiciona notificações ao utilizador
+      description: As notificações são especificados para o utilizar
+      operationId: criaNotificacao
+      requestBody:
+        description: Adiciona uma Notificação ao utilizador
+        content:
+          application/json:
+              schema:
+                $ref: '#/components/schemas/Noti'
+      responses:
+        '200':
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                example:
+                  result: true
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+  /notificacoes/{read}:
+    get:
+      tags:
+        - Notificações
+      summary: Notificações vistas ou não vistas do utilizador
+      description: Mostra as notificações do utilizar não vistas ou vistas
+      operationId: getNotificacaoRead
+      parameters:
+        - name: read
+          in: path
+          description: Estado de visto da notificação
+          required: true
+          schema:
+            type: boolean
+            example: True
+      responses:
+        '200':
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Noti'
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+  /notificacoes/{idNotificacao}:
+    get:
+      tags:
+        - Notificações
+      summary: Uma Notificação escolhida por ID do utilizador
+      description: Mostra a notificação por ID do utilizar
+      operationId: getNotificacao
+      parameters:
+        - name: idNotificacao
+          in: path
+          description: ID da Notificação
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Noti'
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+components:
+  schemas:
+    Noti:
+      type: object
+      properties:
+        idNotificacao:
+          type: integer
+          example: 1
+        idUser:
+          type: string
+          example: PG1
+        Titulo:
+          type: string
+          example: Classificação da Prova
+        Descricao:
+          type: string
+          example: A sua classificação na Prova C foi 13 valores
+        Read:
+          type: boolean
+          example: False

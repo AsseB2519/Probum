@@ -1,0 +1,336 @@
+openapi: 3.0.3
+info:
+  title: Micro-Serviço correção provas
+  description: >-
+    Este micro-serviço é responsável pelo processo pós prova. Este micro serviço
+    contem as seguintes funcionalidades:
+
+    - Docente classifica uma resposta
+
+    - Docente verifica se prova está todo classificada
+
+    - Docente publica classificações de uma dada prova
+
+    - Alunos consultarem classificações de uma prova
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.11
+tags:
+  - name: Classificacao Automática
+    description: Tudo sobre as classificações automaticas
+  - name: Aluno Classificacao
+    description: Tudo sobre as classificações de um aluno
+  - name: Notas Provas
+    description: Tudo sobre as classificações de uma prova
+paths:
+  /auto_classificacao/:
+    post:
+      tags:
+        - Classificacao Automática
+      summary: Adiciona classificação para as perguntas de correção automática
+      description: Adiciona classificação para as perguntas de correção automática
+      operationId: corrigeAutomatico
+      requestBody:
+        description: Adiciona classificação para as perguntas de correção automática
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AutoClassificacao'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  idProva: PY
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+  /classificacao/alunos/{idProva}/{idAluno}:
+    get:
+      tags:
+        - Aluno Classificacao
+      summary: Aluno consulta a sua classificação
+      description: Aluno consulta a sua prova
+      operationId: getClassificacao
+      parameters:
+        - name: idProva
+          in: path
+          description: ID da prova
+          required: true
+          schema:
+            type: string
+        - name: idAluno
+          in: path
+          description: ID do aluno
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificacaoAluno'
+                    
+        '404':
+          description: Aluno ou Prova não existe
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Aluno ou Prova não existe'
+  /classificacao/alunos/{idAluno}:
+    get:
+      tags:
+        - Aluno Classificacao
+      summary: Sistema busca provas que o aluno tem avaliação
+      description: Sistema busca provas que o aluno tem avaliação
+      operationId: getClassificacaoProvas
+      parameters:
+        - name: idAluno
+          in: path
+          description: ID do aluno
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Provas'
+                    
+        '404':
+          description: Aluno não existe
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Aluno não existe'
+  /classificacao/alunos/:
+    post:
+      tags:
+        - Aluno Classificacao
+      summary: Adiciona novas entradas nas classificações de uma Prova de um Aluno
+      description: Adiciona novas entradas nas classificações de uma Prova de um Aluno
+      operationId: GuardaSubmissao
+      requestBody:
+        description: Cria uma classificação de uma prova para um aluno
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewEntry'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificacaoProva'
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+    put:
+      tags:
+        - Aluno Classificacao
+      summary: Atualiza a classificação de um questão de um aluno
+      description: Atualiza a classificação de um questão de um aluno
+      operationId: guardaCorrecao
+      requestBody:
+        description: Atualiza uma classificação de uma prova
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/ClassificacaoQuestao'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassificacaoProva'
+        '404':
+          description: Dados incorretos
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Dados incorretos'
+  /classificacao/provas/{idProva}:
+    post:
+      tags:
+        - Notas Provas
+      summary: Publica as notas de uma prova
+      description: Publica as notas de uma prova
+      operationId: publishClassifications
+      parameters:
+        - name: idProva
+          in: path
+          description: ID da prova
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  idProva: PY
+        '404':
+          description: Prova não existe
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Prova não existe'
+    get:
+      tags:
+        - Notas Provas
+      summary: Verifica se as notas de uma prova estão publicadas
+      description: Verifica se as notas de uma prova estão publicadas
+      operationId: verificaClassificacoes
+      parameters:
+        - name: idProva
+          in: path
+          description: ID da prova
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                example:
+                  result: true
+        '404':
+          description: Prova não existe
+          content:
+            application/json:
+              schema:
+                example:
+                  message: 'Prova não existe'
+components:
+  schemas:
+    ClassificacaoProva:
+      type: object
+      properties:
+        idAluno:
+          type: string
+          example: PGXXXXX
+        idProva:
+          type: integer
+          example: 1
+        classificacao:
+          type: integer
+          example: 10
+    Provas:
+      type: array
+      items: 
+        type: object
+        properties:
+          idProva: 
+            type: integer
+            example: 1
+          publica: 
+            type: boolean
+            example: True
+    ClassificacaoQuestao:
+      type: object
+      properties:
+        idAluno:
+          type: string
+          example: PGXXXXX
+        idQuestao:
+          type: integer
+          example: 1
+        idProva:
+          type: integer
+          example: 1
+        classificacao:
+          type: integer
+          example: 10
+    NewEntry:
+      type: object
+      properties:
+        idAluno:
+          type: string
+          example: PGXXXXX
+        idProva:
+          type: integer
+          example: 1
+        idQuestoes:
+          type: array
+          items: 
+            example: 
+              2
+    ClassificacaoAluno:
+      type: object
+      properties:
+        idAluno:
+          type: string
+          example : PGXXXXX
+        idProva:
+          type: integer
+          example : 1
+        classificacao:
+          type: integer
+          example : 10
+        classificacao_respostas:
+          type: array
+          items:
+            type: object
+            properties:
+              idQuestao:
+                type: integer
+                example : 1
+              classificacao:
+                type: integer
+                example : 10
+    AutoClassificacao:
+      type: object
+      properties:
+        prova:
+          type: integer
+          example : 1
+        questoes_respostas:
+          type: array
+          items:
+            type: object
+            properties:
+              idQuestao:
+                type: integer
+                example : 1
+              resposta:
+                type: string
+                example : ABCDEF
+              classificacao_certa:
+                type: integer
+                example : 5
+              classificacao_errada:
+                type: integer
+                example : 5
+              alunos_respostas:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    idAluno:
+                      type: string
+                      example : PGXXXXX
+                    resposta:
+                      example : ABCDEF

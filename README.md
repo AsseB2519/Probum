@@ -32,6 +32,6 @@ The Probum project is an innovative software solution aimed at improving the adm
 <div style="flex: 1;">
   <h3>Evaluation:</h3>
   <p><strong>Score:</strong> 15/20</p>
-  <p><strong>Tools:</strong> Python / MySQL / Flask / UML </p>
+  <p><strong>Tools:</strong> MicroServices / Python / MySQL / Flask / UML </p>
 </div>
 

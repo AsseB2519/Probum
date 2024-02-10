@@ -4,7 +4,7 @@
 
 </div>
 
-The Probum project is an innovative software solution aimed at improving the administration of academic assessments within higher education institutions. Probum simplifies the creation, scheduling, and grading of assessments for students across various courses in different universities. It utilizes existing computing infrastructure, ensuring smooth assessment processes even when resources are limited, and offers customizable features for flexibility. Professors benefit from the ability to easily create assessments, set schedules, and automate grading tasks, thereby improving efficiency and accuracy in academic evaluation. Probum helps educational institutions effectively manage assessment workflows, ultimately enhancing the learning experience for both students and teachers.
+The Probum project is an software solution aimed at improving the administration of academic assessments within higher education institutions. Probum simplifies the creation, scheduling, and grading of assessments for students across various courses in different universities. It utilizes existing computing infrastructure, ensuring smooth assessment processes even when resources are limited, and offers customizable features for flexibility. Professors benefit from the ability to easily create assessments, set schedules, and automate grading tasks, thereby improving efficiency and accuracy in academic evaluation. Probum helps educational institutions effectively manage assessment workflows, ultimately enhancing the learning experience for both students and teachers.
 
 <h3>Objectives:</h3>
 
